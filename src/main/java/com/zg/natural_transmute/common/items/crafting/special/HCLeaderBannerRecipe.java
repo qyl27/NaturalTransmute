@@ -40,7 +40,7 @@ public class HCLeaderBannerRecipe extends HarmoniousChangeRecipe {
     }
 
     @Override
-    public Ingredient getMetaphysicas() {
+    public Ingredient getBiomeCatalysts() {
         return Ingredient.of(NTItems.H_DARK_FOREST.get());
     }
 

@@ -9,26 +9,26 @@ import net.neoforged.bus.api.Event;
 
 import java.util.Map;
 
-public class RegisterSpecialFuXiangCraftingConditionEvent extends Event {
+public class RegisterSpecialBiomeCatalystCraftingConditionEvent extends Event {
 
     private final Map<Item, Boolean> conditionMaps;
     private final GatheringPlatformBlockEntity blockEntity;
 
-    public RegisterSpecialFuXiangCraftingConditionEvent(
+    public RegisterSpecialBiomeCatalystCraftingConditionEvent(
             Map<Item, Boolean> conditionMaps,
             GatheringPlatformBlockEntity blockEntity) {
         this.conditionMaps = conditionMaps;
         this.blockEntity = blockEntity;
     }
 
-    public void register(Item fuXiang, boolean condition) {
-        ResourceLocation key = BuiltInRegistries.ITEM.getKey(fuXiang);
-        if (this.conditionMaps.containsKey(fuXiang)) {
+    public void register(Item BiomeCatalyst, boolean condition) {
+        ResourceLocation key = BuiltInRegistries.ITEM.getKey(BiomeCatalyst);
+        if (this.conditionMaps.containsKey(BiomeCatalyst)) {
             throw new IllegalStateException("Duplicate item key: '" + key + "'");
-        } else if (!fuXiang.components().has(NTDataComponents.ASSOCIATED_BIOMES.get())) {
+        } else if (!BiomeCatalyst.components().has(NTDataComponents.ASSOCIATED_BIOMES.get())) {
             throw new IllegalStateException("The item '" + key + "' is not a valid Fu Xiang!");
         } else {
-            this.conditionMaps.put(fuXiang, condition);
+            this.conditionMaps.put(BiomeCatalyst, condition);
         }
     }
 

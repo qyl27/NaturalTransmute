@@ -17,7 +17,7 @@ public class HCSculkCatalystRecipe extends HCInactivateCoralRecipe {
     }
 
     @Override
-    public Ingredient getMetaphysicas() {
+    public Ingredient getBiomeCatalysts() {
         return Ingredient.of(NTItems.H_DEEP_DARK.get());
     }
 

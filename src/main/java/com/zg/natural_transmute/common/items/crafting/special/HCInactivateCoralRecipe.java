@@ -36,7 +36,7 @@ public class HCInactivateCoralRecipe extends HarmoniousChangeRecipe {
     }
 
     @Override
-    public Ingredient getMetaphysicas() {
+    public Ingredient getBiomeCatalysts() {
         return Ingredient.of(NTItems.H_DESERT.get(), NTItems.H_BADLANDS.get());
     }
 

@@ -36,7 +36,7 @@ public class HCActivateCoralRecipe extends HarmoniousChangeRecipe {
     }
 
     @Override
-    public Ingredient getMetaphysicas() {
+    public Ingredient getBiomeCatalysts() {
         return Ingredient.of(NTItems.H_WARM_OCEAN.get());
     }
 

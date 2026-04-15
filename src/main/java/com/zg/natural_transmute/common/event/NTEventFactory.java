@@ -8,8 +8,8 @@ import java.util.Map;
 
 public class NTEventFactory {
 
-    public static void onRegisterSpecialFuXiangCraftingCondition(Map<Item, Boolean> conditionMaps, GatheringPlatformBlockEntity blockEntity) {
-        NeoForge.EVENT_BUS.post(new RegisterSpecialFuXiangCraftingConditionEvent(conditionMaps, blockEntity));
+    public static void onRegisterSpecialBiomeCatalystCraftingCondition(Map<Item, Boolean> conditionMaps, GatheringPlatformBlockEntity blockEntity) {
+        NeoForge.EVENT_BUS.post(new RegisterSpecialBiomeCatalystCraftingConditionEvent(conditionMaps, blockEntity));
     }
 
 }

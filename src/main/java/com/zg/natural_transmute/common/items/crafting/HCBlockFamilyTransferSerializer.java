@@ -27,7 +27,7 @@ public class HCBlockFamilyTransferSerializer implements RecipeSerializer<HCBlock
                         Ingredient[] ingredients = list.toArray(Ingredient[]::new);
                         return DataResult.success(NonNullList.of(Ingredient.EMPTY, ingredients));
                         }, DataResult::success).forGetter(HCBlockFamilyTransferRecipe::getExtraIngredients),
-                    Ingredient.CODEC_NONEMPTY.fieldOf("biome_catalysts").forGetter(HCBlockFamilyTransferRecipe::getMetaphysicas)
+                    Ingredient.CODEC_NONEMPTY.fieldOf("biome_catalysts").forGetter(HCBlockFamilyTransferRecipe::getBiomeCatalysts)
             ).apply(instance, HCBlockFamilyTransferRecipe::new));
 
     @Override
@@ -66,7 +66,7 @@ public class HCBlockFamilyTransferSerializer implements RecipeSerializer<HCBlock
         for (Ingredient ingredient : recipe.getExtraIngredients()) {
             Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, ingredient);
         }
-        Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.getMetaphysicas());
+        Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.getBiomeCatalysts());
     }
 
 }

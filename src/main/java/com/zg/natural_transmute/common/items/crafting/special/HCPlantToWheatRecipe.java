@@ -48,7 +48,7 @@ public class HCPlantToWheatRecipe extends HarmoniousChangeRecipe {
     }
 
     @Override
-    public Ingredient getMetaphysicas() {
+    public Ingredient getBiomeCatalysts() {
         return Ingredient.of(NTItems.H_SAVANNA.get());
     }
 

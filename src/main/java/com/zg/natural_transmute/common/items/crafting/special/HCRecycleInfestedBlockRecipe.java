@@ -34,7 +34,7 @@ public class HCRecycleInfestedBlockRecipe extends HarmoniousChangeRecipe {
     }
 
     @Override
-    public Ingredient getMetaphysicas() {
+    public Ingredient getBiomeCatalysts() {
         return Ingredient.of(NTItems.H_MOUNTAINS.get(), NTItems.H_SNOWY_SLOPES.get(),
                 NTItems.H_MEADOW.get(), NTItems.H_CHERRY_GROVE.get());
     }

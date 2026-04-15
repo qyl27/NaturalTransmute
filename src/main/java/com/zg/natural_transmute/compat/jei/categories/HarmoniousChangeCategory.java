@@ -74,7 +74,7 @@ public class HarmoniousChangeCategory implements IRecipeCategory<HarmoniousChang
         builder.addSlot(RecipeIngredientRole.INPUT, 23, 12).addIngredients(ingredients.get(1));
         builder.addSlot(RecipeIngredientRole.INPUT, 41, 12).addIngredients(ingredients.get(2));
         builder.addSlot(RecipeIngredientRole.INPUT, 26, 42).addItemStacks(fuelList);
-        builder.addSlot(RecipeIngredientRole.INPUT, 65, 19).addIngredients(recipe.getMetaphysicas());
+        builder.addSlot(RecipeIngredientRole.INPUT, 65, 19).addIngredients(recipe.getBiomeCatalysts());
         HarmoniousChangeRecipeInput input = new HarmoniousChangeRecipeInput(inputList, ItemStack.EMPTY, ItemStack.EMPTY);
         if (results.size() == 1) {
             ClientLevel level = Minecraft.getInstance().level;

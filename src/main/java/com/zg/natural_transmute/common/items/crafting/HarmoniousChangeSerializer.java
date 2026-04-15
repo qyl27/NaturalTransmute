@@ -35,7 +35,7 @@ public class HarmoniousChangeSerializer implements RecipeSerializer<HarmoniousCh
                                 return DataResult.success(NonNullList.of(ItemStack.EMPTY, itemStacks));
                             }, DataResult::success)
                             .forGetter(HarmoniousChangeRecipe::getResults),
-                    Ingredient.CODEC_NONEMPTY.fieldOf("biome_catalysts").forGetter(HarmoniousChangeRecipe::getMetaphysicas),
+                    Ingredient.CODEC_NONEMPTY.fieldOf("biome_catalysts").forGetter(HarmoniousChangeRecipe::getBiomeCatalysts),
                     Codec.INT.fieldOf("time").forGetter(HarmoniousChangeRecipe::getTime),
                     Codec.BOOL.fieldOf("consume").forGetter(HarmoniousChangeRecipe::isConsume)
             ).apply(instance, HarmoniousChangeRecipe::new));
@@ -112,7 +112,7 @@ public class HarmoniousChangeSerializer implements RecipeSerializer<HarmoniousCh
             ItemStack.STREAM_CODEC.encode(buffer, stack);
         }
 
-        Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.getMetaphysicas());
+        Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.getBiomeCatalysts());
         buffer.writeVarInt(recipe.getTime());
         buffer.writeBoolean(recipe.isConsume());
     }

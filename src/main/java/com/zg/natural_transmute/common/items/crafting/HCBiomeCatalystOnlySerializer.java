@@ -7,16 +7,16 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
-public class HCMetaphysicaOnlySerializer<T extends HarmoniousChangeRecipe> implements RecipeSerializer<T> {
+public class HCBiomeCatalystOnlySerializer<T extends HarmoniousChangeRecipe> implements RecipeSerializer<T> {
 
     private final Factory<T> factory;
     private final MapCodec<T> codec;
 
-    public HCMetaphysicaOnlySerializer(Factory<T> factory) {
+    public HCBiomeCatalystOnlySerializer(Factory<T> factory) {
         this.factory = factory;
         this.codec = RecordCodecBuilder.mapCodec(instance -> instance.group(
                 Ingredient.CODEC_NONEMPTY.fieldOf("biome_catalysts")
-                        .forGetter(HarmoniousChangeRecipe::getMetaphysicas)
+                        .forGetter(HarmoniousChangeRecipe::getBiomeCatalysts)
         ).apply(instance, factory::create));
     }
 
@@ -35,7 +35,7 @@ public class HCMetaphysicaOnlySerializer<T extends HarmoniousChangeRecipe> imple
     }
 
     private void toNetwork(RegistryFriendlyByteBuf buffer, T recipe) {
-        Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.getMetaphysicas());
+        Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.getBiomeCatalysts());
     }
 
     public interface Factory<T extends HarmoniousChangeRecipe> {

@@ -47,7 +47,7 @@ public class HCSuspiciousStewRecipe extends HarmoniousChangeRecipe {
     }
 
     @Override
-    public Ingredient getMetaphysicas() {
+    public Ingredient getBiomeCatalysts() {
         return Ingredient.of(NTItems.H_MUSHROOM.get());
     }
 

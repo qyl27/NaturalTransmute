@@ -1212,41 +1212,41 @@ public class NTRecipeProvider extends RecipeProvider {
         harmoniousChangeOfCopyIngredient(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(NTItems.H_WARM_OCEAN.get()).requires(Items.BRICK), Items.SHELTER_POTTERY_SHERD);
         harmoniousChangeOfCopyIngredient(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(NTItems.H_WARM_OCEAN.get()).requires(Items.BRICK), Items.ANGLER_POTTERY_SHERD);
 
-        ItemLike[] forestMetaphysica = new ItemLike[] {NTItems.H_BIRCH_FOREST.get(), NTItems.H_JUNGLE.get(), NTItems.H_TAIGA.get(), NTItems.H_OLD_GROWTH_TAIGA.get()};
-        harmoniousChangeOfCopyIngredient(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(forestMetaphysica).requires(Items.BRICK), Items.BURN_POTTERY_SHERD);
-        harmoniousChangeOfCopyIngredient(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(forestMetaphysica).requires(Items.BRICK), Items.SHEAF_POTTERY_SHERD);
-        harmoniousChangeOfCopyIngredient(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(forestMetaphysica).requires(Items.BRICK), Items.HOWL_POTTERY_SHERD);
-        harmoniousChangeOfCopyIngredient(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(forestMetaphysica).requires(Items.BRICK), Items.HEART_POTTERY_SHERD);
-        harmoniousChangeOfCopyIngredient(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(forestMetaphysica).requires(Items.BRICK), Items.HEARTBREAK_POTTERY_SHERD);
-        harmoniousChangeOfCopyIngredient(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(forestMetaphysica).requires(Items.BRICK), Items.DANGER_POTTERY_SHERD);
-        harmoniousChangeOfCopyIngredient(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(forestMetaphysica).requires(Items.BRICK), Items.FRIEND_POTTERY_SHERD);
+        ItemLike[] forestBiomeCatalyst = new ItemLike[] {NTItems.H_BIRCH_FOREST.get(), NTItems.H_JUNGLE.get(), NTItems.H_TAIGA.get(), NTItems.H_OLD_GROWTH_TAIGA.get()};
+        harmoniousChangeOfCopyIngredient(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(forestBiomeCatalyst).requires(Items.BRICK), Items.BURN_POTTERY_SHERD);
+        harmoniousChangeOfCopyIngredient(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(forestBiomeCatalyst).requires(Items.BRICK), Items.SHEAF_POTTERY_SHERD);
+        harmoniousChangeOfCopyIngredient(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(forestBiomeCatalyst).requires(Items.BRICK), Items.HOWL_POTTERY_SHERD);
+        harmoniousChangeOfCopyIngredient(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(forestBiomeCatalyst).requires(Items.BRICK), Items.HEART_POTTERY_SHERD);
+        harmoniousChangeOfCopyIngredient(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(forestBiomeCatalyst).requires(Items.BRICK), Items.HEARTBREAK_POTTERY_SHERD);
+        harmoniousChangeOfCopyIngredient(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(forestBiomeCatalyst).requires(Items.BRICK), Items.DANGER_POTTERY_SHERD);
+        harmoniousChangeOfCopyIngredient(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(forestBiomeCatalyst).requires(Items.BRICK), Items.FRIEND_POTTERY_SHERD);
 
-        ItemLike[] netherMetaphysica = new ItemLike[] {NTItems.H_NETHER.get(), NTItems.H_CRIMSON_FOREST.get(),
+        ItemLike[] netherBiomeCatalyst = new ItemLike[] {NTItems.H_NETHER.get(), NTItems.H_CRIMSON_FOREST.get(),
                 NTItems.H_WARPED_FOREST.get(), NTItems.H_SOUL_SAND_VALLEY.get(), NTItems.H_BASALT_DELTAS.get()};
-        harmoniousChangeWithCustomName(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(netherMetaphysica)
+        harmoniousChangeWithCustomName(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(netherBiomeCatalyst)
                 .requires(Items.SKELETON_SKULL).requires(NTItems.WITHER_BONE.get()).results(Items.WITHER_SKELETON_SKULL));
-        harmoniousChangeWithCustomName(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(netherMetaphysica)
+        harmoniousChangeWithCustomName(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(netherBiomeCatalyst)
                 .requires(Items.COPPER_BLOCK).requires(Items.TORCH).requires(Items.REDSTONE)
                 .results(Items.COPPER_BULB, 2).name(getItemName(Items.COPPER_BLOCK)));
-        harmoniousChangeWithCustomName(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(netherMetaphysica)
+        harmoniousChangeWithCustomName(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(netherBiomeCatalyst)
                 .requires(Items.EXPOSED_COPPER).requires(Items.TORCH).requires(Items.REDSTONE)
                 .results(Items.EXPOSED_COPPER_BULB, 2).name(getItemName(Items.EXPOSED_COPPER)));
-        harmoniousChangeWithCustomName(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(netherMetaphysica)
+        harmoniousChangeWithCustomName(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(netherBiomeCatalyst)
                 .requires(Items.WEATHERED_COPPER).requires(Items.TORCH).requires(Items.REDSTONE)
                 .results(Items.WEATHERED_COPPER_BULB, 2).name(getItemName(Items.EXPOSED_COPPER)));
-        harmoniousChangeWithCustomName(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(netherMetaphysica)
+        harmoniousChangeWithCustomName(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(netherBiomeCatalyst)
                 .requires(Items.OXIDIZED_COPPER).requires(Items.TORCH).requires(Items.REDSTONE)
                 .results(Items.OXIDIZED_COPPER_BULB, 2).name(getItemName(Items.OXIDIZED_COPPER)));
-        harmoniousChangeWithCustomName(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(netherMetaphysica)
+        harmoniousChangeWithCustomName(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(netherBiomeCatalyst)
                 .requires(NTItems.HARMONIOUS_CHANGE_FUEL.get()).requires(Items.LAVA_BUCKET)
                 .requires(Items.BLAZE_ROD).results(NTItems.HARMONIOUS_CHANGE_LAVA_BUCKET.get()));
-        harmoniousChangeWithCustomName(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(netherMetaphysica)
+        harmoniousChangeWithCustomName(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(netherBiomeCatalyst)
                 .requires(Items.WITHER_SKELETON_SKULL).results(NTItems.WITHER_BONE.get(), 3));
-        harmoniousChangeOfCopyIngredient(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(netherMetaphysica)
+        harmoniousChangeOfCopyIngredient(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(netherBiomeCatalyst)
                 .requires(Items.DIAMOND).requires(Items.NETHERRACK), Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE);
-        harmoniousChangeOfCopyIngredient(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(netherMetaphysica)
+        harmoniousChangeOfCopyIngredient(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(netherBiomeCatalyst)
                 .requires(Items.DIAMOND).requires(Items.BLACKSTONE), Items.SNOUT_ARMOR_TRIM_SMITHING_TEMPLATE);
-        harmoniousChangeOfCopyIngredient(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(netherMetaphysica)
+        harmoniousChangeOfCopyIngredient(recipeOutput, HarmoniousChangeRecipeBuilder.addRecipe(netherBiomeCatalyst)
                 .requires(Items.DIAMOND).requires(Items.NETHER_BRICK), Items.RIB_ARMOR_TRIM_SMITHING_TEMPLATE);
 
         harmoniousChangeOfBlockFamily(recipeOutput, Blocks.MOSSY_COBBLESTONE, Blocks.COBBLESTONE,

@@ -46,7 +46,7 @@ public class HCCopperOxidationRecipe extends HarmoniousChangeRecipe {
     }
 
     @Override
-    public Ingredient getMetaphysicas() {
+    public Ingredient getBiomeCatalysts() {
         return Ingredient.of(NTItems.H_SWAMP.get(), NTItems.H_MANGROVE_SWAMP.get(),
                 NTItems.H_JUNGLE.get(), NTItems.H_RIVER.get(), NTItems.H_OCEAN.get(),
                 NTItems.H_FROZEN_OCEAN.get(), NTItems.H_BEACH.get(), NTItems.H_STONE_SHORE.get(),

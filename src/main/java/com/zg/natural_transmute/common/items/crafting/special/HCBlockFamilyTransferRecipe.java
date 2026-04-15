@@ -72,7 +72,7 @@ public class HCBlockFamilyTransferRecipe extends HarmoniousChangeRecipe {
         return this.ingredients;
     }
 
-    public Ingredient getMetaphysicas() {
+    public Ingredient getBiomeCatalysts() {
         return this.biome_catalysts;
     }
 
