@@ -1,0 +1,32 @@
+{
+  "criteria": {
+    "biome_catalyst": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#natural_transmute:biome_catalyst"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.natural_transmute.biome_catalyst.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "natural_transmute:gathering_platform"
+    },
+    "title": {
+      "translate": "advancements.natural_transmute.biome_catalyst.title"
+    }
+  },
+  "requirements": [
+    [
+      "biome_catalyst"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

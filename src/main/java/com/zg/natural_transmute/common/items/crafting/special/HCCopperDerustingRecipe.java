@@ -19,7 +19,7 @@ public class HCCopperDerustingRecipe extends HCCopperOxidationRecipe {
     }
 
     @Override
-    public Ingredient getMetaphysicas() {
+    public Ingredient getBiomeCatalysts() {
         return Ingredient.of(NTItems.H_WINDSWEPT.get());
     }
 

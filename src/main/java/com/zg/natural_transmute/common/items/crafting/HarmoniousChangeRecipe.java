@@ -22,7 +22,7 @@ public class HarmoniousChangeRecipe implements Recipe<HarmoniousChangeRecipeInpu
     protected final NonNullList<Ingredient> ingredients;
     private final NonNullList<ItemStack> excepts;
     private final NonNullList<ItemStack> results;
-    private final Ingredient metaphysica;
+    private final Ingredient biome_catalyst;
     private final int time;
     private final boolean consume;
 
@@ -30,18 +30,18 @@ public class HarmoniousChangeRecipe implements Recipe<HarmoniousChangeRecipeInpu
             NonNullList<Ingredient> ingredients,
             NonNullList<ItemStack> excepts,
             NonNullList<ItemStack> results,
-            Ingredient metaphysica,
+            Ingredient biome_catalyst,
             int time, boolean consume) {
         this.ingredients = ingredients;
         this.excepts = excepts;
         this.results = results;
-        this.metaphysica = metaphysica;
+        this.biome_catalyst = biome_catalyst;
         this.time = time;
         this.consume = consume;
     }
 
-    public HarmoniousChangeRecipe(NonNullList<Ingredient> ingredients, NonNullList<ItemStack> results, Ingredient metaphysica) {
-        this(ingredients, NonNullList.create(), results, metaphysica, 160, Boolean.TRUE);
+    public HarmoniousChangeRecipe(NonNullList<Ingredient> ingredients, NonNullList<ItemStack> results, Ingredient biome_catalyst) {
+        this(ingredients, NonNullList.create(), results, biome_catalyst, 160, Boolean.TRUE);
     }
 
     protected boolean extraMatches(HarmoniousChangeRecipeInput input) {
@@ -57,7 +57,7 @@ public class HarmoniousChangeRecipe implements Recipe<HarmoniousChangeRecipeInpu
         } else {
             Item item = input.getItem(4).getItem();
             boolean flag1 = HarmoniousChangeStoveBlockEntity.getFuel().containsKey(input.getItem(3).getItem());
-            boolean flag2 = this.getMetaphysicas().test(input.getItem(4));
+            boolean flag2 = this.getBiomeCatalysts().test(input.getItem(4));
             boolean flag3 = item.components().has(NTDataComponents.ASSOCIATED_BIOMES.get());
             return flag1 && flag2 && flag3 && this.extraMatches(input);
         }
@@ -103,8 +103,8 @@ public class HarmoniousChangeRecipe implements Recipe<HarmoniousChangeRecipeInpu
         return this.results;
     }
 
-    public Ingredient getMetaphysicas() {
-        return this.metaphysica;
+    public Ingredient getBiomeCatalysts() {
+        return this.biome_catalyst;
     }
 
     public int getTime() {

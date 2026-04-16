@@ -67,14 +67,14 @@ public class GatheringPlatformBlockEntity extends SimpleContainerBlockEntity {
         }
     }
 
-    private static Map<Item, Boolean> getSpecialFuXiangs(GatheringPlatformBlockEntity blockEntity) {
+    private static Map<Item, Boolean> getSpecialBiomeCatalysts(GatheringPlatformBlockEntity blockEntity) {
         Map<Item, Boolean> map = Maps.newHashMap();
         BlockPos pos = blockEntity.getBlockPos();
         Level level = blockEntity.getLevel();
         if (level != null) {
             ResourceKey<Level> dimension = level.dimension();
             map.put(NTItems.H_DEEPSLATE.get(), pos.getY() < 0 && dimension == Level.OVERWORLD);
-            NTEventFactory.onRegisterSpecialFuXiangCraftingCondition(map, blockEntity);
+            NTEventFactory.onRegisterSpecialBiomeCatalystCraftingCondition(map, blockEntity);
         }
 
         return map;
@@ -83,8 +83,14 @@ public class GatheringPlatformBlockEntity extends SimpleContainerBlockEntity {
     private void gathering(GatheringRecipe recipe, BlockPos pos, BlockState state) {
         if (this.level != null) {
             AssociatedBiomes biomes = recipe.result.get(NTDataComponents.ASSOCIATED_BIOMES);
-            boolean flag = getSpecialFuXiangs(this).get(recipe.result.getItem());
-            if (biomes != null && (biomes.biomes().contains(this.level.getBiome(pos).getKey()) || flag)) {
+            Boolean flagObj = getSpecialBiomeCatalysts(this).get(recipe.result.getItem());
+            boolean flag = flagObj != null && flagObj;
+
+            boolean canCraft = biomes == null ||
+                    biomes.biomes().contains(this.level.getBiome(pos).getKey()) ||
+                    flag;
+
+            if (canCraft) {
                 ItemStack assemble = recipe.assemble(this.getRecipeInput(), this.level.registryAccess());
                 this.totalGatheringTime = this.gatheringTime;
                 this.gatheringTime++;

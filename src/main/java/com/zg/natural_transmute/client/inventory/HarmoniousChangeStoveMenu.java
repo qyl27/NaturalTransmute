@@ -41,7 +41,7 @@ public class HarmoniousChangeStoveMenu extends AbstractSimpleMenu {
         this.addSlot(new SlotItemHandler(itemHandler, 1, 26, 15));
         this.addSlot(new SlotItemHandler(itemHandler, 2, 44, 15));
         this.addSlot(new FuelSlot(itemHandler, 3, 29, 45));
-        this.addSlot(new FuXiangSlot(itemHandler, 4, 68, 22));
+        this.addSlot(new BiomeCatalystSlot(itemHandler, 4, 68, 22));
         this.addSlot(new HCResultSlot(itemHandler, 5, 105, 41));
         this.addSlot(new HCResultSlot(itemHandler, 6, 123, 41));
         this.addSlot(new HCResultSlot(itemHandler, 7, 141, 41));
@@ -86,7 +86,7 @@ public class HarmoniousChangeStoveMenu extends AbstractSimpleMenu {
                     if (!this.moveItemStackTo(sourceStack, 39, 40, Boolean.FALSE)) {
                         return ItemStack.EMPTY;
                     }
-                } else if (sourceStack.is(NTItemTags.METAPHYSICA)) {
+                } else if (sourceStack.is(NTItemTags.BIOME_CATALYST)) {
                     if (!this.moveItemStackTo(sourceStack, 40, 41, Boolean.FALSE)) {
                         return ItemStack.EMPTY;
                     }
@@ -137,9 +137,9 @@ public class HarmoniousChangeStoveMenu extends AbstractSimpleMenu {
 
     }
 
-    private static class FuXiangSlot extends SlotItemHandler {
+    private static class BiomeCatalystSlot extends SlotItemHandler {
 
-        public FuXiangSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
+        public BiomeCatalystSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
             super(itemHandler, index, xPosition, yPosition);
         }
 

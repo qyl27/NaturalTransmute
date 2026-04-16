@@ -16,7 +16,7 @@ public class HCPlantToGlowLichenRecipe extends HCPlantToWheatRecipe {
     }
 
     @Override
-    public Ingredient getMetaphysicas() {
+    public Ingredient getBiomeCatalysts() {
         return Ingredient.of(NTItems.H_DEEPSLATE.get());
     }
 

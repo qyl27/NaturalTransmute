@@ -31,12 +31,12 @@ public class NTAdvancements implements AdvancementSubProvider {
                         .hasItems(NTItems.HETEROGENEOUS_STONE.get()))
                 .save(writer, NaturalTransmute.prefix("heterogeneous_stone").toString());
         Advancement.Builder.advancement().display(NTBlocks.GATHERING_PLATFORM.get(),
-                        text("fu_xiang", "title"),
-                        text("fu_xiang", "description"),
+                        text("biome_catalyst", "title"),
+                        text("biome_catalyst", "description"),
                         (null), AdvancementType.TASK, Boolean.TRUE, Boolean.TRUE, Boolean.FALSE)
-                .addCriterion("fu_xiang", InventoryChangeTrigger.TriggerInstance
-                        .hasItems(ItemPredicate.Builder.item().of(NTItemTags.METAPHYSICA)))
-                .save(writer, NaturalTransmute.prefix("fu_xiang").toString());
+                .addCriterion("biome_catalyst", InventoryChangeTrigger.TriggerInstance
+                        .hasItems(ItemPredicate.Builder.item().of(NTItemTags.BIOME_CATALYST)))
+                .save(writer, NaturalTransmute.prefix("biome_catalyst").toString());
         Advancement.Builder.advancement().display(NTItems.HARMONIOUS_CHANGE_CORE.get(),
                         text("harmonious_change", "title"),
                         text("harmonious_change", "description"),
