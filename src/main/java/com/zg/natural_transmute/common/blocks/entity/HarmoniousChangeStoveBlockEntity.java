@@ -34,25 +34,43 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.ObjIntConsumer;
 
 public class HarmoniousChangeStoveBlockEntity extends SimpleContainerBlockEntity {
+    public static final int INPUT_A_SLOT = 0;
+    public static final int INPUT_B_SLOT = 1;
+    public static final int INPUT_C_SLOT = 2;
+    public static final int FUEL_SLOT = 3;
+    public static final int BIOME_CATALYST_SLOT = 4;
+    public static final int OUTPUT_A_SLOT = 5;
+    public static final int OUTPUT_B_SLOT = 6;
+    public static final int OUTPUT_C_SLOT = 7;
+
+    public static final int IDLING_STATE = 0;
+    public static final int WORKING_STATE = 1;
 
     private int time;
     private int totalTime;
     private int currentState;
+
+    /**
+     * Remaining burn time for the current fuel.
+     */
     private int litTime;
+
+    /**
+     * Maximum burn time for the current fuel.
+     * Used by the menu to render the fuel bar.
+     */
     private int litDuration;
+
     @Nullable
     public BlockPos mainPos;
     private final ContainerData containerData = new Data();
     private final RecipeManager.CachedCheck<HarmoniousChangeRecipeInput, ? extends HarmoniousChangeRecipe> quickCheck;
-    @Nullable
-    private static volatile Map<Item, Integer> fuelCache;
 
     public HarmoniousChangeStoveBlockEntity(BlockPos pos, BlockState blockState) {
         super(NTBlockEntityTypes.HARMONIOUS_CHANGE_STOVE.get(), pos, blockState);
@@ -61,47 +79,62 @@ public class HarmoniousChangeStoveBlockEntity extends SimpleContainerBlockEntity
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, HarmoniousChangeStoveBlockEntity blockEntity) {
-        boolean didInventoryChange = false;
+        boolean shouldReset = false;
+        boolean changed = false;
+
         if (blockEntity.hasInput()) {
             HarmoniousChangeRecipe recipe = blockEntity.checkHarmoniousChangeRecipe();
-            if (recipe != null && blockEntity.canWork(recipe)) {
-                if (blockEntity.isLit()) {
-                    didInventoryChange = blockEntity.processRecipe(recipe);
-                    blockEntity.currentState = 1;
-                } else {
-                    blockEntity.litTime = getFuel().get(blockEntity.getItem(3).getItem());
-                    blockEntity.litDuration = blockEntity.litTime;
-                    if (blockEntity.litTime > 0 && !blockEntity.getItem(3).isEmpty()) {
-                        ItemStack fuelStack = blockEntity.getItem(3);
-                        if (!fuelStack.is(NTItems.HARMONIOUS_CHANGE_LAVA_BUCKET.get()) &&
-                                !fuelStack.is(NTItems.ETERNAL_HARMONIOUS_CHANGE_LAVA_BUCKET.get())) {
-                            fuelStack.shrink(1);
-                            didInventoryChange = true;
-                        }
+            if (recipe != null && blockEntity.canWork(recipe)) {    // Tick working
+                if (!blockEntity.isLit()) { // Consumes fuel
+                    var fuel = blockEntity.getItem(FUEL_SLOT);
+                    var fuelValue = getFuel(fuel.getItem());
+                    if (fuelValue != null) {
+                        fuel.shrink(1);
+                        blockEntity.litTime = fuelValue;
+                        blockEntity.litDuration = fuelValue;
+                    } else {    // Fail to lit, reset
+                        shouldReset = true;
                     }
                 }
+
+                var isRecipeDone = blockEntity.processRecipe(recipe);
+                if (isRecipeDone) {
+                    blockEntity.currentState = IDLING_STATE;
+                } else {
+                    blockEntity.currentState = WORKING_STATE;
+                }
+                changed = true;
             } else {
-                blockEntity.time = 0;
-                blockEntity.currentState = 0;
+                shouldReset = true;
             }
         } else if (blockEntity.time > 0) {
+            shouldReset = true;
+        }
+
+        if (shouldReset) {
             blockEntity.time = 0;
+            // XXX: totalTime is not using here, fill it in processRecipe :(
+            blockEntity.currentState = IDLING_STATE;
         }
 
-        if (blockEntity.litTime > 0) {
-            blockEntity.litTime--;
-            didInventoryChange = true;
-        }
-
-        if (didInventoryChange) {
+        if (changed || shouldReset) {
             setChanged(level, pos, state);
         }
     }
 
 
+    /**
+     * Tick process recipe.
+     * @param recipe Recipe.
+     * @return true for the recipe process was done, false for still processing.
+     */
     private boolean processRecipe(HarmoniousChangeRecipe recipe) {
         if (this.level == null) {
             return false;
+        }
+
+        if (this.litTime > 0) { // Lit time -= 1, only in working.
+            this.litTime -= 1;
         }
 
         ++this.time;
@@ -160,11 +193,9 @@ public class HarmoniousChangeStoveBlockEntity extends SimpleContainerBlockEntity
 
         return new HarmoniousChangeRecipeInput(ingredients, fuel, biome_catalyst);
     }
+
     private boolean isLit() {
-        ItemStack fuel = this.getItem(3);
-        boolean b1 = fuel.is(NTItems.HARMONIOUS_CHANGE_LAVA_BUCKET);
-        boolean b2 = fuel.is(NTItems.ETERNAL_HARMONIOUS_CHANGE_LAVA_BUCKET);
-        return this.litTime > 0 || b1 || b2;
+        return this.litTime > 0;
     }
 
     private boolean hasInput() {
@@ -263,6 +294,11 @@ public class HarmoniousChangeStoveBlockEntity extends SimpleContainerBlockEntity
         return new HarmoniousChangeStoveMenu(containerId, inventory, access, this.handler, this.containerData);
     }
 
+    // region Fuel
+
+    @Nullable
+    private static volatile Map<Item, Integer> fuelCache;
+
     public static void invalidateCache() {
         fuelCache = null;
     }
@@ -299,6 +335,17 @@ public class HarmoniousChangeStoveBlockEntity extends SimpleContainerBlockEntity
             map.put(holder.value(), amount);
         }
     }
+
+    /**
+     * Get lit time for item.
+     * @param item Item.
+     * @return Lit time in ticks, or null for not a fuel.
+     */
+    public static @Nullable Integer getFuel(Item item) {
+        return getFuel().get(item);
+    }
+
+    // endregion
 
     private class Data implements ContainerData {
 
