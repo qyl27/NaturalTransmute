@@ -5,6 +5,7 @@ import com.zg.natural_transmute.common.blocks.entity.HarmoniousChangeStoveBlockE
 import com.zg.natural_transmute.registry.NTDataComponents;
 import com.zg.natural_transmute.registry.NTItems;
 import com.zg.natural_transmute.registry.NTMobEffects;
+import com.zg.natural_transmute.utils.HarmoniousChangeFuelUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
@@ -32,7 +33,7 @@ public class MiscEventHandler {
 
     @SubscribeEvent
     public static void onTagsUpdated(TagsUpdatedEvent event) {
-        HarmoniousChangeStoveBlockEntity.invalidateCache();
+        HarmoniousChangeFuelUtils.rebuildFuels();
     }
 
     @SubscribeEvent

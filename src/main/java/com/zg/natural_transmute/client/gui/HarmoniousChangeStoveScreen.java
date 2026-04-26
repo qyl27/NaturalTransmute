@@ -37,10 +37,19 @@ public class HarmoniousChangeStoveScreen extends AbstractContainerScreen<Harmoni
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
         int time = Mth.ceil(this.menu.getHarmoniousChangeTime() * 51.0F);
-        int remaining = Mth.ceil(this.menu.getRemaining() * 50.0F);
         ResourceLocation texture = NaturalTransmute.prefix(PATH + this.menu.getCurrentState() + ".png");
         guiGraphics.blit(texture, i, j, 0, 0, this.imageWidth, this.imageHeight);
         guiGraphics.blitSprite(PROGRESS_BAR_0, (51), (21), (0), (0), i + 47, j + 35, time, (21));
+
+        var remaining = 49;
+        if (!this.menu.hasEternalFuel()) {
+            var now = this.menu.getFuelRemain();
+            if (now == 0) {
+                remaining = 0;
+            } else {
+                remaining = 1 + now * 6;
+            }
+        }
         guiGraphics.blitSprite(PROGRESS_BAR_1, (50), (3), (0), (0), i + 106, j + 22, remaining, (3));
     }
 

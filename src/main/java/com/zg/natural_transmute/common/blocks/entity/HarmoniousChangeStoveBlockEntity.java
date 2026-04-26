@@ -8,11 +8,10 @@ import com.zg.natural_transmute.common.items.crafting.HarmoniousChangeRecipeInpu
 import com.zg.natural_transmute.registry.NTBlockEntityTypes;
 import com.zg.natural_transmute.registry.NTItems;
 import com.zg.natural_transmute.registry.NTRecipes;
+import com.zg.natural_transmute.utils.HarmoniousChangeFuelUtils;
 import com.zg.natural_transmute.utils.NTCommonUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.Packet;
@@ -29,7 +28,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -56,16 +54,9 @@ public class HarmoniousChangeStoveBlockEntity extends SimpleContainerBlockEntity
     private int totalTime;
     private int currentState;
 
-    /**
-     * Remaining burn time for the current fuel.
-     */
-    private int litTime;
-
-    /**
-     * Maximum burn time for the current fuel.
-     * Used by the menu to render the fuel bar.
-     */
-    private int litDuration;
+    private int fuelRemain = 0;
+    private int maxFuelDuration = 8;    // Durin_Skeleton assumes max is always 8.
+    private boolean hasEternalFuel = false;
 
     @Nullable
     public BlockPos mainPos;
@@ -85,13 +76,16 @@ public class HarmoniousChangeStoveBlockEntity extends SimpleContainerBlockEntity
         if (blockEntity.hasInput()) {
             HarmoniousChangeRecipe recipe = blockEntity.checkHarmoniousChangeRecipe();
             if (recipe != null && blockEntity.canWork(recipe)) {    // Tick working
-                if (!blockEntity.isLit()) { // Consumes fuel
+                if (!blockEntity.hasFuelRemain()) { // Consumes fuel
                     var fuel = blockEntity.getItem(FUEL_SLOT);
-                    var fuelValue = getFuel(fuel.getItem());
+                    var fuelValue = HarmoniousChangeFuelUtils.getFuel(fuel);
                     if (fuelValue != null) {
                         fuel.shrink(1);
-                        blockEntity.litTime = fuelValue;
-                        blockEntity.litDuration = fuelValue;
+//                        blockEntity.maxFuelDuration = fuelValue;
+                        blockEntity.fuelRemain = fuelValue;
+                        if (HarmoniousChangeFuelUtils.isEternalFuel(fuel)) {
+                            blockEntity.hasEternalFuel = true;
+                        }
                     } else {    // Fail to lit, reset
                         shouldReset = true;
                     }
@@ -100,6 +94,7 @@ public class HarmoniousChangeStoveBlockEntity extends SimpleContainerBlockEntity
                 var isRecipeDone = blockEntity.processRecipe(recipe);
                 if (isRecipeDone) {
                     blockEntity.currentState = IDLING_STATE;
+                    blockEntity.fuelRemain -= 1;
                 } else {
                     blockEntity.currentState = WORKING_STATE;
                 }
@@ -125,16 +120,13 @@ public class HarmoniousChangeStoveBlockEntity extends SimpleContainerBlockEntity
 
     /**
      * Tick process recipe.
+     *
      * @param recipe Recipe.
      * @return true for the recipe process was done, false for still processing.
      */
     private boolean processRecipe(HarmoniousChangeRecipe recipe) {
         if (this.level == null) {
             return false;
-        }
-
-        if (this.litTime > 0) { // Lit time -= 1, only in working.
-            this.litTime -= 1;
         }
 
         ++this.time;
@@ -193,8 +185,8 @@ public class HarmoniousChangeStoveBlockEntity extends SimpleContainerBlockEntity
         return new HarmoniousChangeRecipeInput(ingredients, biome_catalyst);
     }
 
-    private boolean isLit() {
-        return this.litTime > 0;
+    private boolean hasFuelRemain() {
+        return hasEternalFuel || fuelRemain > 0;
     }
 
     private boolean hasInput() {
@@ -268,8 +260,9 @@ public class HarmoniousChangeStoveBlockEntity extends SimpleContainerBlockEntity
         super.loadAdditional(tag, registries);
         this.time = tag.getInt("Time");
         this.totalTime = tag.getInt("TotalTime");
-        this.litTime = tag.getInt("LitTime");
-        this.litDuration = tag.getInt("LitDuration");
+        this.fuelRemain = tag.getInt("FuelRemain");
+        this.maxFuelDuration = tag.getInt("MaxFuelDuration");
+        this.hasEternalFuel = tag.getBoolean("HasEternalFuel");
         this.currentState = tag.getInt("CurrentState");
         this.mainPos = NbtUtils.readBlockPos(tag, "MainPos").orElse(null);
     }
@@ -279,8 +272,9 @@ public class HarmoniousChangeStoveBlockEntity extends SimpleContainerBlockEntity
         super.saveAdditional(tag, registries);
         tag.putInt("Time", this.time);
         tag.putInt("TotalTime", this.totalTime);
-        tag.putInt("LitTime", this.litTime);
-        tag.putInt("LitDuration", this.litDuration);
+        tag.putInt("FuelRemain", this.fuelRemain);
+        tag.putInt("MaxFuelDuration", this.maxFuelDuration);
+        tag.putBoolean("HasEternalFuel", this.hasEternalFuel);
         tag.putInt("CurrentState", this.currentState);
         if (this.mainPos != null) {
             tag.put("MainPos", NbtUtils.writeBlockPos(this.mainPos));
@@ -293,77 +287,31 @@ public class HarmoniousChangeStoveBlockEntity extends SimpleContainerBlockEntity
         return new HarmoniousChangeStoveMenu(containerId, inventory, access, this.handler, this.containerData);
     }
 
-    // region Fuel
+    public class Data implements ContainerData {
+        public static final int TIME = 0;
+        public static final int TOTAL_TIME = 1;
+        public static final int CURRENT_STATE = 2;
+        public static final int FUEL_REMAIN = 3;
+        public static final int MAX_FUEL_DURATION = 4;
+        public static final int HAS_ETERNAL_FUEL = 5;
 
-    @Nullable
-    private static volatile Map<Item, Integer> fuelCache;
-
-    public static void invalidateCache() {
-        fuelCache = null;
-    }
-
-    public static Map<Item, Integer> getFuel() {
-        Map<Item, Integer> cacheMap = fuelCache;
-        if (cacheMap != null) {
-            return cacheMap;
-        } else {
-            Map<Item, Integer> map = Maps.newLinkedHashMap();
-            buildFuels((e, amount) -> e.ifRight(tag -> add(map, tag, amount))
-                    .ifLeft(item -> map.put(item.asItem(), amount)));
-            fuelCache = map;
-            return map;
-        }
-    }
-
-    private static void add(ObjIntConsumer<Either<Item, TagKey<Item>>> consumer, ItemLike item, int amount) {
-        consumer.accept(Either.left(item.asItem()), amount);
-    }
-
-    private static void add(ObjIntConsumer<Either<Item, TagKey<Item>>> consumer, TagKey<Item> tag, int amount) {
-        consumer.accept(Either.right(tag), amount);
-    }
-
-    public static void buildFuels(ObjIntConsumer<Either<Item, TagKey<Item>>> map) {
-        add(map, Items.AMETHYST_SHARD, 200);
-        add(map, Items.LAPIS_LAZULI, 400);
-        add(map, NTItems.HARMONIOUS_CHANGE_FUEL.get(), 800);
-    }
-
-    private static void add(Map<Item, Integer> map, TagKey<Item> itemTag, int amount) {
-        for (Holder<Item> holder : BuiltInRegistries.ITEM.getTagOrEmpty(itemTag)) {
-            map.put(holder.value(), amount);
-        }
-    }
-
-    /**
-     * Get lit time for item.
-     * @param item Item.
-     * @return Lit time in ticks, or null for not a fuel.
-     */
-    public static @Nullable Integer getFuel(Item item) {
-        return getFuel().get(item);
-    }
-
-    // endregion
-
-    private class Data implements ContainerData {
+        public static final int TRUE = 1;
+        public static final int FALSE = 0;
 
         @Override
         public int get(int index) {
-            if (index == 0) {
+            if (index == TIME) {
                 return time;
-            } else if (index == 1) {
+            } else if (index == TOTAL_TIME) {
                 return totalTime;
-            } else if (index == 2) {
+            } else if (index == CURRENT_STATE) {
                 return currentState;
-            } else if (index == 3) {
-                if (litDuration > Short.MAX_VALUE) {
-                    return Mth.floor(((double) litTime / litDuration) * Short.MAX_VALUE);
-                }
-
-                return litTime;
-            } else if (index == 4) {
-                return Math.min(litDuration, Short.MAX_VALUE);
+            } else if (index == FUEL_REMAIN) {
+                return fuelRemain;
+            } else if (index == MAX_FUEL_DURATION) {
+                return maxFuelDuration;
+            } else if (index == HAS_ETERNAL_FUEL) {
+                return hasEternalFuel ? TRUE : FALSE;
             } else {
                 return 0;
             }
@@ -371,24 +319,24 @@ public class HarmoniousChangeStoveBlockEntity extends SimpleContainerBlockEntity
 
         @Override
         public void set(int index, int value) {
-            if (index == 0) {
+            if (index == TIME) {
                 time = value;
-            } else if (index == 1) {
+            } else if (index == TOTAL_TIME) {
                 totalTime = value;
-            } else if (index == 2) {
+            } else if (index == CURRENT_STATE) {
                 currentState = value;
-            } else if (index == 3) {
-                litTime = value;
-            } else if (index == 4) {
-                litDuration = value;
+            } else if (index == FUEL_REMAIN) {
+                fuelRemain = value;
+            } else if (index == MAX_FUEL_DURATION) {
+                maxFuelDuration = value;
+            } else if (index == HAS_ETERNAL_FUEL) {
+                hasEternalFuel = value != FALSE;
             }
         }
 
         @Override
         public int getCount() {
-            return 5;
+            return 6;
         }
-
     }
-
 }

@@ -4,6 +4,7 @@ import com.zg.natural_transmute.common.blocks.entity.HarmoniousChangeStoveBlockE
 import com.zg.natural_transmute.registry.NTDataComponents;
 import com.zg.natural_transmute.registry.NTRecipeSerializers;
 import com.zg.natural_transmute.registry.NTRecipes;
+import com.zg.natural_transmute.utils.HarmoniousChangeFuelUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.Item;
@@ -55,11 +56,10 @@ public class HarmoniousChangeRecipe implements Recipe<HarmoniousChangeRecipeInpu
         if (input.ingredientCount() != this.getIngredients().size()) {
             return false;
         } else {
-            Item item = input.getItem(4).getItem();
-            boolean flag1 = HarmoniousChangeStoveBlockEntity.getFuel().containsKey(input.getItem(3).getItem());
-            boolean flag2 = this.getBiomeCatalysts().test(input.getItem(4));
+            Item item = input.getItem(HarmoniousChangeRecipeInput.BIOME_CATALYST_SLOT).getItem();
+            boolean flag2 = this.getBiomeCatalysts().test(input.getItem(HarmoniousChangeRecipeInput.BIOME_CATALYST_SLOT));
             boolean flag3 = item.components().has(NTDataComponents.ASSOCIATED_BIOMES.get());
-            return flag1 && flag2 && flag3 && this.extraMatches(input);
+            return flag2 && flag3 && this.extraMatches(input);
         }
     }
 

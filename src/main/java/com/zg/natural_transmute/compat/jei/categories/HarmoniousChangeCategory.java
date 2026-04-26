@@ -5,6 +5,7 @@ import com.zg.natural_transmute.common.blocks.entity.HarmoniousChangeStoveBlockE
 import com.zg.natural_transmute.common.items.crafting.HarmoniousChangeRecipe;
 import com.zg.natural_transmute.common.items.crafting.HarmoniousChangeRecipeInput;
 import com.zg.natural_transmute.registry.NTBlocks;
+import com.zg.natural_transmute.utils.HarmoniousChangeFuelUtils;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -67,7 +68,7 @@ public class HarmoniousChangeCategory implements IRecipeCategory<HarmoniousChang
     public void setRecipe(IRecipeLayoutBuilder builder, HarmoniousChangeRecipe recipe, IFocusGroup focuses) {
         NonNullList<Ingredient> ingredients = recipe.getIngredients();
         NonNullList<ItemStack> results = recipe.getResults();
-        Set<Item> items = HarmoniousChangeStoveBlockEntity.getFuel().keySet();
+        List<Item> items = HarmoniousChangeFuelUtils.getFuelsItemView();
         List<ItemStack> inputList = List.of(ingredients.getFirst().getItems());
         List<ItemStack> fuelList = new ArrayList<>(items.stream().map(ItemStack::new).toList());
         builder.addSlot(RecipeIngredientRole.INPUT, 5, 12).addIngredients(ingredients.getFirst());

@@ -6,6 +6,7 @@ import com.zg.natural_transmute.registry.NTBlocks;
 import com.zg.natural_transmute.registry.NTDataComponents;
 import com.zg.natural_transmute.registry.NTMenus;
 import com.zg.natural_transmute.registry.NTTriggerTypes;
+import com.zg.natural_transmute.utils.HarmoniousChangeFuelUtils;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -49,23 +50,25 @@ public class HarmoniousChangeStoveMenu extends AbstractSimpleMenu {
     }
 
     public float getHarmoniousChangeTime() {
-        float i = this.containerData.get(0);
-        float j = this.containerData.get(1);
+        float i = this.containerData.get(HarmoniousChangeStoveBlockEntity.Data.TIME);
+        float j = this.containerData.get(HarmoniousChangeStoveBlockEntity.Data.TOTAL_TIME);
         return j != 0 && i != 0 ? Mth.clamp(i / j, 0.0F, 1.0F) : 0.0F;
     }
 
     public int getCurrentState() {
-        return this.containerData.get(2);
+        return this.containerData.get(HarmoniousChangeStoveBlockEntity.Data.CURRENT_STATE);
     }
 
-    public float getRemaining() {
-        float i = this.containerData.get(3);
-        int j = this.containerData.get(4);
-        if (j == 0) {
-            j = 320;
-        }
+    public int getFuelRemain() {
+        return this.containerData.get(HarmoniousChangeStoveBlockEntity.Data.FUEL_REMAIN);
+    }
 
-        return Mth.clamp(i / (float)j, 0.0F, 1.0F);
+    public int getMaxFuelDuration() {
+        return this.containerData.get(HarmoniousChangeStoveBlockEntity.Data.MAX_FUEL_DURATION);
+    }
+
+    public boolean hasEternalFuel() {
+        return this.containerData.get(HarmoniousChangeStoveBlockEntity.Data.HAS_ETERNAL_FUEL) == HarmoniousChangeStoveBlockEntity.Data.TRUE;
     }
 
     @Override
@@ -82,7 +85,7 @@ public class HarmoniousChangeStoveMenu extends AbstractSimpleMenu {
 
                 slot.onQuickCraft(sourceStack, copyOfSourceStack);
             } else if (index < 41) {
-                if (HarmoniousChangeStoveBlockEntity.getFuel().containsKey(sourceStack.getItem())) {
+                if (HarmoniousChangeFuelUtils.isFuel(sourceStack)) {
                     if (!this.moveItemStackTo(sourceStack, 39, 40, Boolean.FALSE)) {
                         return ItemStack.EMPTY;
                     }
@@ -132,7 +135,7 @@ public class HarmoniousChangeStoveMenu extends AbstractSimpleMenu {
 
         @Override
         public boolean mayPlace(ItemStack stack) {
-            return HarmoniousChangeStoveBlockEntity.getFuel().containsKey(stack.getItem());
+            return HarmoniousChangeFuelUtils.isFuel(stack);
         }
 
     }
