@@ -7,16 +7,18 @@ import net.minecraft.world.item.crafting.RecipeInput;
 import java.util.List;
 
 public class HarmoniousChangeRecipeInput implements RecipeInput {
+    public static final int INPUT_A_SLOT = 0;
+    public static final int INPUT_B_SLOT = 1;
+    public static final int INPUT_C_SLOT = 2;
+    public static final int BIOME_CATALYST_SLOT = 4;
 
     private final List<ItemStack> items;
-    private final ItemStack fuel;
     private final ItemStack biome_catalyst;
     private final StackedContents stackedContents = new StackedContents();
     private final int ingredientCount;
 
-    public HarmoniousChangeRecipeInput(List<ItemStack> items, ItemStack fuel, ItemStack biome_catalyst) {
+    public HarmoniousChangeRecipeInput(List<ItemStack> items, ItemStack biome_catalyst) {
         this.items = items;
-        this.fuel = fuel;
         this.biome_catalyst = biome_catalyst;
         int i = 0;
         for (ItemStack itemStack : items) {
@@ -33,8 +35,6 @@ public class HarmoniousChangeRecipeInput implements RecipeInput {
     public ItemStack getItem(int index) {
         if (index < 3) {
             return this.items.get(index);
-        } else if (index == 3) {
-            return this.fuel;
         } else if (index == 4) {
             return this.biome_catalyst;
         } else {

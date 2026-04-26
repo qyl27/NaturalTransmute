@@ -181,17 +181,16 @@ public class HarmoniousChangeStoveBlockEntity extends SimpleContainerBlockEntity
     }
 
     private HarmoniousChangeRecipeInput getRecipeInput() {
-        ItemStack input1 = this.getItem(0);
-        ItemStack input2 = this.getItem(1);
-        ItemStack input3 = this.getItem(2);
-        ItemStack fuel = this.getItem(3);
-        ItemStack biome_catalyst = this.getItem(4);
+        ItemStack input1 = this.getItem(INPUT_A_SLOT);
+        ItemStack input2 = this.getItem(INPUT_B_SLOT);
+        ItemStack input3 = this.getItem(INPUT_C_SLOT);
+        ItemStack biome_catalyst = this.getItem(BIOME_CATALYST_SLOT);
 
         List<ItemStack> ingredients = java.util.stream.Stream.of(input1, input2, input3)
                 .filter(stack -> !stack.isEmpty())
                 .collect(java.util.stream.Collectors.toList());
 
-        return new HarmoniousChangeRecipeInput(ingredients, fuel, biome_catalyst);
+        return new HarmoniousChangeRecipeInput(ingredients, biome_catalyst);
     }
 
     private boolean isLit() {

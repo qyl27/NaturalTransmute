@@ -1,6 +1,5 @@
 package com.zg.natural_transmute.common.items.crafting.special;
 
-import com.zg.natural_transmute.common.blocks.entity.HarmoniousChangeStoveBlockEntity;
 import com.zg.natural_transmute.common.data.NTBlockFamilies;
 import com.zg.natural_transmute.common.items.crafting.HarmoniousChangeRecipe;
 import com.zg.natural_transmute.common.items.crafting.HarmoniousChangeRecipeInput;
@@ -39,8 +38,7 @@ public class HCBlockFamilyTransferRecipe extends HarmoniousChangeRecipe {
         if (input.ingredientCount() != this.getIngredients().size()) {
             return false;
         } else {
-            boolean hasFuel = HarmoniousChangeStoveBlockEntity.getFuel().containsKey(input.getItem(3).getItem());
-            return hasFuel && this.biome_catalysts.test(input.getItem(4)) && this.extraMatches(input);
+            return this.biome_catalysts.test(input.getItem(HarmoniousChangeRecipeInput.BIOME_CATALYST_SLOT)) && this.extraMatches(input);
         }
     }
 
