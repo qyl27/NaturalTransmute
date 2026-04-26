@@ -1,12 +1,9 @@
 package com.zg.natural_transmute.common.blocks.entity;
 
-import com.google.common.collect.Maps;
-import com.mojang.datafixers.util.Either;
 import com.zg.natural_transmute.client.inventory.HarmoniousChangeStoveMenu;
 import com.zg.natural_transmute.common.items.crafting.HarmoniousChangeRecipe;
 import com.zg.natural_transmute.common.items.crafting.HarmoniousChangeRecipeInput;
 import com.zg.natural_transmute.registry.NTBlockEntityTypes;
-import com.zg.natural_transmute.registry.NTItems;
 import com.zg.natural_transmute.registry.NTRecipes;
 import com.zg.natural_transmute.utils.HarmoniousChangeFuelUtils;
 import com.zg.natural_transmute.utils.NTCommonUtils;
@@ -17,15 +14,12 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
@@ -33,9 +27,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.function.ObjIntConsumer;
 
 public class HarmoniousChangeStoveBlockEntity extends SimpleContainerBlockEntity {
     public static final int INPUT_A_SLOT = 0;
@@ -55,7 +47,7 @@ public class HarmoniousChangeStoveBlockEntity extends SimpleContainerBlockEntity
     private int currentState;
 
     private int fuelRemain = 0;
-    private int maxFuelDuration = 8;    // Durin_Skeleton assumes max is always 8.
+    private final int maxFuelDuration = 8;    // Durin_Skeleton assumes max is always 8.
     private boolean hasEternalFuel = false;
 
     @Nullable
@@ -78,11 +70,9 @@ public class HarmoniousChangeStoveBlockEntity extends SimpleContainerBlockEntity
             if (recipe != null && blockEntity.canWork(recipe)) {    // Tick working
                 if (!blockEntity.hasFuelRemain()) { // Consumes fuel
                     var fuel = blockEntity.getItem(FUEL_SLOT);
-                    var fuelValue = HarmoniousChangeFuelUtils.getFuel(fuel);
-                    if (fuelValue != null) {
+                    if (HarmoniousChangeFuelUtils.isFuel(fuel)) {
                         fuel.shrink(1);
-//                        blockEntity.maxFuelDuration = fuelValue;
-                        blockEntity.fuelRemain = fuelValue;
+                        blockEntity.fuelRemain = 8;
                         if (HarmoniousChangeFuelUtils.isEternalFuel(fuel)) {
                             blockEntity.hasEternalFuel = true;
                         }
@@ -94,7 +84,9 @@ public class HarmoniousChangeStoveBlockEntity extends SimpleContainerBlockEntity
                 var isRecipeDone = blockEntity.processRecipe(recipe);
                 if (isRecipeDone) {
                     blockEntity.currentState = IDLING_STATE;
-                    blockEntity.fuelRemain -= 1;
+                    if (!blockEntity.hasEternalFuel) {
+                        blockEntity.fuelRemain -= 1;
+                    }
                 } else {
                     blockEntity.currentState = WORKING_STATE;
                 }
@@ -261,7 +253,6 @@ public class HarmoniousChangeStoveBlockEntity extends SimpleContainerBlockEntity
         this.time = tag.getInt("Time");
         this.totalTime = tag.getInt("TotalTime");
         this.fuelRemain = tag.getInt("FuelRemain");
-        this.maxFuelDuration = tag.getInt("MaxFuelDuration");
         this.hasEternalFuel = tag.getBoolean("HasEternalFuel");
         this.currentState = tag.getInt("CurrentState");
         this.mainPos = NbtUtils.readBlockPos(tag, "MainPos").orElse(null);
@@ -273,7 +264,6 @@ public class HarmoniousChangeStoveBlockEntity extends SimpleContainerBlockEntity
         tag.putInt("Time", this.time);
         tag.putInt("TotalTime", this.totalTime);
         tag.putInt("FuelRemain", this.fuelRemain);
-        tag.putInt("MaxFuelDuration", this.maxFuelDuration);
         tag.putBoolean("HasEternalFuel", this.hasEternalFuel);
         tag.putInt("CurrentState", this.currentState);
         if (this.mainPos != null) {
@@ -326,9 +316,9 @@ public class HarmoniousChangeStoveBlockEntity extends SimpleContainerBlockEntity
             } else if (index == CURRENT_STATE) {
                 currentState = value;
             } else if (index == FUEL_REMAIN) {
-                fuelRemain = value;
+                fuelRemain = Mth.clamp(value, 0, maxFuelDuration);
             } else if (index == MAX_FUEL_DURATION) {
-                maxFuelDuration = value;
+                // No-op
             } else if (index == HAS_ETERNAL_FUEL) {
                 hasEternalFuel = value != FALSE;
             }
